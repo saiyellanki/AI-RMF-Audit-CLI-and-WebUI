@@ -1,0 +1,52 @@
+(Security Policy for agent-sandbox-harness)
+This profile restricts the Linux syscall surface for Docker containers running autonomous agents, blocking kernel manipulation, process debugging, raw socket creation, and unauthorized shell execution.
+{
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "architectures": [
+    "SCMP_ARCH_X86_64",
+    "SCMP_ARCH_X86",
+    "SCMP_ARCH_AARCH64"
+  ],
+  "syscalls": [
+    {
+      "names": [
+        "read",
+        "write",
+        "exit",
+        "exit_group",
+        "futex",
+        "epoll_wait",
+        "epoll_pwait",
+        "clock_gettime",
+        "gettimeofday",
+        "brk",
+        "mmap",
+        "munmap",
+        "mprotect",
+        "fstat",
+        "stat",
+        "lstat",
+        "getpid",
+        "gettid",
+        "rt_sigaction",
+        "rt_sigprocmask",
+        "rt_sigreturn"
+      ],
+      "action": "SCMP_ACT_ALLOW"
+    },
+    {
+      "comment": "Explicitly block privilege escalation & process memory inspection",
+      "names": [
+        "ptrace",
+        "process_vm_readv",
+        "process_vm_writev",
+        "sys_admin",
+        "kexec_load",
+        "reboot",
+        "setuid",
+        "setgid"
+      ],
+      "action": "SCMP_ACT_KILL"
+    }
+  ]
+}
